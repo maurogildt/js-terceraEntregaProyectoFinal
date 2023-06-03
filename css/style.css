@@ -1,0 +1,14 @@
+body{
+    background-color: #fff6c0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.title{
+    color: #120907;
+    text-decoration: underline;
+}
+.subtitle{
+    color: #252444;
+}
+.list{
+    color: #5e5996;
+}
