@@ -1,14 +1,38 @@
-let precioProcesador = 14000
-let precioMother = 21000
-let precioRam = 10000
-let precioPlacaDeVideo = 60000
-let precioDiscoRigido = 23000
-let precioFuente = 22000
-let precioGabinete = 18000
+const products = [{
+    title: "Procesador",
+    price: 14000,
+    id:1
+},{
+    title: "Mother",
+    price: 21000,
+    id:2
+},{
+    title: "Memoria Ram 8gb",
+    price: 10000,
+    id:3
+},{
+    title: "Placa de Video 2Gb",
+    price: 60000,
+    id:4
+},{
+    title: "Disco Rigido de 1T",
+    price: 23000,
+    id:5
+},{
+    title: "Fuente de Alimentacion 600W",
+    price: 22000,
+    id:6
+},{
+    title: "Gabinete",
+    price: 18000,
+    id:7
+}]
+let indexProducts = 0
 let total = 0
+const cart = []
 
 function armarPc(){
-    let respuesta = parseInt(prompt(`
+    let answer = parseInt(prompt(`
     Que desea comprar para armar su pc? 💻
     1-Procesador
     2-Mother
@@ -18,19 +42,27 @@ function armarPc(){
     6-Fuente de Alimentacion 600W
     7-Gabinete
     `))
-    if(respuesta){
-        mostrarPrecioYSumar(respuesta)
-        let seguir = confirm("Desea seguir comprando?")
-        if(seguir){
+    if(answer){
+        addCart(answer)
+        indexProducts += 1
+        alert(cart[indexProducts-1].title+" te sale $ "+cart[indexProducts-1].price)
+        let continueBuy = confirm("Desea seguir comprando?")
+        if(continueBuy){
             armarPc()
             return
         }else{
-            mostrarPrecioYSumar(8)
+            for(let i=0;i<=indexProducts;i++){
+                let productCart = (cart[i].title + ": $ "+ cart[i].price)
+                total += cart[i].price
+                console.log(productCart)
+            }
+            console.log(total)
         }
-        let pagoTarjeta = confirm("Desea abonar con tarjeta de credito? 💳 Interes:15%")
-        if(pagoTarjeta){
-            let numeroCuotas = parseInt(prompt("En cuantas cuotas desea abonar? De 1 a 12"))
-            cuotas(numeroCuotas)
+        console.log(total)
+        let cardPayment = confirm("Desea abonar con tarjeta de credito? 💳 Interes:15%")
+        if(cardPayment){
+            let numQuotas = parseInt(prompt("En cuantas cuotas desea abonar? De 1 a 12"))
+            quota(numQuotas)
         }else{
             alert(`
             Muy bien! Aguardamos su pago para poder realizar la entrega...
@@ -40,46 +72,17 @@ function armarPc(){
     }
 }
 
-function cuotas(numeroCuotas){
-    let cuota = Math.floor((total + total*0.15)/numeroCuotas)
-    for(let i=1; i<=numeroCuotas; i++){
-        console.log("La cuota numero "+i+" es de $"+cuota)
+function quota(numQuotas){
+    let quota = Math.floor((total + total*0.15)/numQuotas)
+    for(let i=1; i<=numQuotas; i++){
+        alert("La cuota numero "+i+" es de $"+quota)
     }
-    console.log("Su total con tarjeta de credito es de $"+ Math.floor(total + total*0.15))
+    alert("Su total con tarjeta de credito es de $"+ Math.floor(total + total*0.15))
 }
 
-function mostrarPrecioYSumar(respuesta){
-    switch(respuesta){
-        case 1:
-            total += precioProcesador
-            alert("Procesador te sale $" + precioProcesador)
-            break
-        case 2:
-            total += precioMother
-            alert("Mother te sale $"+ precioMother)
-            break
-        case 3:
-            total += precioRam
-            alert("Memoria Ram 8gb te sale $"+ precioRam)
-            break
-        case 4:
-            total += precioPlacaDeVideo
-            alert("Placa de Video 2Gb te sale $"+ precioPlacaDeVideo)
-            break
-        case 5:
-            total += precioDiscoRigido
-            alert("Disco Rigido de 1T te sale $"+ precioDiscoRigido)
-            break
-        case 6:
-            total += precioFuente
-            alert("Fuente de Alimentacion 600W te sale $"+ precioFuente)
-            break
-        case 7:
-            total += precioGabinete
-            alert("Gabinete te sale $"+ precioGabinete)
-            break
-        case 8:
-            alert("El total de su compra es: $"+ total)
-            break
-    }
+function addCart(answer){
+    const product = products.find((product)=> product.id == answer)
+    cart.push(product)
 }
+
+armarPc()
