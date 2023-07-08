@@ -1,19 +1,20 @@
 class Product {
-    constructor(title, price, id) {
+    constructor(title, price, id, image) {
         this.title = title
         this.price = price
         this.id = id
+        this.image = image
     }
 }
 
 const products = [
-    new Product("Procesador", 14000, 1),
-    new Product("Mother", 21000, 2),
-    new Product("Memoria Ram 8gb", 10000, 3),
-    new Product("Placa de Video 2Gb", 60000, 4),
-    new Product("Disco Rigido de 1T", 23000, 5),
-    new Product("Fuente de Alimentacion 600W", 22000, 6),
-    new Product("Gabinete", 18000, 7)
+    new Product("Procesador", 14000, 1, "./images/procesador.jpg"),
+    new Product("Mother", 21000, 2, "./images/motherboard.jpg"),
+    new Product("Memoria Ram 8gb", 10000, 3, "./images/memoriaRam.jpg"),
+    new Product("Placa de Video 2Gb", 60000, 4, "./images/placaDeVideo.jpg"),
+    new Product("Disco Rigido de 1T", 23000, 5, "./images/discoRigido.jpg"),
+    new Product("Fuente de Alimentacion 600W", 22000, 6, "./images/fuenteDeAlimentacion.jpg"),
+    new Product("Gabinete", 18000, 7, "./images/gabinete.jpg")
 ]
 
 class Cart {
@@ -36,7 +37,7 @@ class Cart {
     showCart() {
         let textCart = "Carrito 🛒:\n\n"
         this.products.forEach((product) => {
-            textCart += product.title + " - $" + product.price + "\n";
+            textCart += product.title + " - $" + product.price + "\n"
         })
         textCart += "\n Su total es: $" + this.total
         alert(textCart)
@@ -55,45 +56,45 @@ class Cart {
 
 let cart = new Cart()
 
-function buildPc() {
-    let answer = parseInt(prompt(
-        `Que desea comprar para armar su pc? 💻
-        1-Procesador
-        2-Mother
-        3-Memoria Ram 8gb
-        4-Placa de Video 2Gb
-        5-Disco Rigido de 1T
-        6-Fuente de Alimentacion 600W
-        7-Gabinete
-        `))
+function generateProductHTML(product) {
+    return `
+        <div class="col-md-4">
+            <div class="card product-card">
+                <img src="${product.image}" class="card-img-top" alt="${product.title}">
+                <div class="card-body product-details">
+                    <h5 class="card-title product-title">${product.title}</h5>
+                    <p class="card-text product-price">Precio: $${product.price}</p>
+                    <button class="btn btn-primary product-button">Agregar al carrito</button>
+                </div>
+            </div>
+        </div>
+    `
+  }
 
-    if (answer) {
-        const product = products.find((product) => product.id === answer)
-        if (product) {
-            cart.addProduct(product)
-            alert(product.title + " te sale $ " + product.price)
-        } else {
-            alert("Seleccione un producto valido")
-        }
-
-        let continueBuy = confirm("Desea seguir comprando?")
-        if (continueBuy) {
-            buildPc()
-        } else {
-            cart.calculateTotal()
-            cart.showCart()
-            let cardPayment = confirm("Desea abonar con tarjeta de credito? 💳 Interes:15%")
-            if (cardPayment) {
-                let numQuotas = parseInt(prompt("En cuantas cuotas desea abonar? De 1 a 12"))
-                cart.quota(numQuotas)
-            } else {
-                alert(`
-            Muy bien! Aguardamos su pago para poder realizar la entrega...
-            ✨ Saludos ✨
-            `)
-            }
-        }
-    }
+function loadProducts() {
+    const productContainer = document.getElementById("product-container")
+    products.forEach((product) => {
+        const productHTML = generateProductHTML(product)
+        productContainer.innerHTML += productHTML
+    })
 }
 
-buildPc()
+function addToCart(productToAdd) {
+    cart.addProduct(productToAdd)
+    cart.calculateTotal()
+    cart.showCart()
+}
+
+function setupAddToCartButtons() {
+    const addToCartBtns = document.querySelectorAll('.btn.btn-primary.product-button')
+
+    addToCartBtns.forEach((btn, index) => {
+        btn.addEventListener('click', function() {
+            const productToAdd = products[index]
+            addToCart(productToAdd, index)
+        })
+    })
+}
+
+loadProducts()
+setupAddToCartButtons()
