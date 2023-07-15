@@ -42,15 +42,12 @@ class Cart {
         textCart += "\n Su total es: $" + this.total
         alert(textCart)
     }
-    
-    quota(numQuotas) {
-        let quota = Math.floor((this.total + this.total * 0.15) / numQuotas)
-        let textQuota = "Sus cuotas con tarjeta de credito son: \n\n"
-        for (let i = 1; i <= numQuotas; i++) {
-            textQuota += "Cuota numero " + i + " es de $" + quota + "\n"
-        }
-        textQuota += "\n Su total con tarjeta de credito es de $" + Math.floor(this.total + this.total * 0.15)
-        alert(textQuota)
+
+    clearCart() {
+        this.products = []
+        this.total = 0
+        this.showCart()
+        saveCartToLocalStorage()
     }
 }
 
@@ -64,7 +61,7 @@ function generateProductHTML(product) {
                 <div class="card-body product-details">
                     <h5 class="card-title product-title">${product.title}</h5>
                     <p class="card-text product-price">Precio: $${product.price}</p>
-                    <button class="btn btn-primary product-button">Agregar al carrito</button>
+                    <button class="btn btn-primary product-button" id="addToCartBtn">Agregar al carrito</button>
                 </div>
             </div>
         </div>
@@ -83,11 +80,11 @@ function addToCart(productToAdd) {
     cart.addProduct(productToAdd)
     cart.calculateTotal()
     cart.showCart()
+    saveCartToLocalStorage()
 }
 
 function setupAddToCartButtons() {
     const addToCartBtns = document.querySelectorAll('.btn.btn-primary.product-button')
-
     addToCartBtns.forEach((btn, index) => {
         btn.addEventListener('click', function() {
             const productToAdd = products[index]
@@ -96,5 +93,31 @@ function setupAddToCartButtons() {
     })
 }
 
+function saveCartToLocalStorage() {
+    localStorage.setItem('cart', JSON.stringify(cart.products));
+}
+
+function loadCartFromLocalStorage() {
+    const cartData = localStorage.getItem('cart')
+    if (cartData) {
+        const savedCart = JSON.parse(cartData)
+        savedCart.forEach((productData) => {
+            const { title, price, id, image } = productData
+            const product = new Product(title, price, id, image)
+            cart.addProduct(product)
+        })
+        cart.calculateTotal()
+        cart.showCart()
+    }
+}
+
+document.getElementById("cart-button").addEventListener("click", function() {
+    cart.showCart()
+})
+document.getElementById("clear-cart-button").addEventListener("click", function() {
+    cart.clearCart()
+})
+
 loadProducts()
 setupAddToCartButtons()
+loadCartFromLocalStorage()
